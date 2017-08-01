@@ -36,13 +36,13 @@ function getConfig(config) {
 
         config.type = config.type || "react";
         config.rootOutDir = config.outdir || "doc/";
-        config.outdir = path.join(docConfig.outdir || 'doc', pkg.version, '/');
-        config.project.version = pkg.version;
+        config.outdir = path.join(config.outdir || 'doc', PKG.version, '/');
+        config.project.version = PKG.version;
     }
 
     const configDir = configFilepath ? path.dirname(configFilepath) : process.cwd();
 
-    const mergedConfig = merge({}, config, { configDir });
+    const mergedConfig = merge({}, config);
 
     return mergedConfig;
 }

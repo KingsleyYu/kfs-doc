@@ -3,18 +3,17 @@
 const Y = require('yuidocjs');
 const fs = require("fs");
 const path = require("path");
-const docConfig=require('./config')()
 
 exports.build = function (config, callback) {    
-    if (!fs.existsSync(docConfig.rootOutdir)) {
-        fs.mkdirSync(docConfig.rootOutdir)
+    if (!fs.existsSync(config.rootOutDir)) {
+        fs.mkdirSync(config.rootOutDir)
     }
 
-    if (!fs.existsSync(docConfig.outdir)) {
-        fs.mkdirSync(docConfig.outdir)
+    if (!fs.existsSync(config.outdir)) {
+        fs.mkdirSync(config.outdir)
     }
 
-    buildDoc(docConfig,callback);
+    buildDoc(config,callback);
 
     function buildDoc(options,callback) {
         var json;
@@ -31,6 +30,8 @@ exports.build = function (config, callback) {
         var metaData = buildDocConfig(Object.assign({}, json));
 
         fs.writeFileSync(path.join(options.outdir, 'doc.js'), "export default \r\n" + JSON.stringify(metaData));
+
+        callback&&callback();
     }
 
     function buildDocConfig(data) {

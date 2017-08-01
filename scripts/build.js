@@ -2,12 +2,11 @@
 
 const webpack = require('webpack');
 const makeWebpackConfig = require('./make-webpack-config');
-const docBuild = require('./doc')
+const doc = require('./doc')
 
-module.exports = function build(config, callback) {
+module.exports = function build(config, env, callback) {
     doc.build(config, () => {
-        return webpack(makeWebpackConfig(config, 'production'), (err, stats) => {
-            // require('fs').writeFileSync('stats.json', JSON.stringify(stats.toJson()));
+        return webpack(makeWebpackConfig(config, env), (err, stats) => {
             callback(err, stats);
         });
     })

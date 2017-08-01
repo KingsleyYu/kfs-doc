@@ -7,10 +7,10 @@ const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const getWebpackVersion = require('./utils/getWebpackVersion');
+const hasJsonLoader = require('./utils/hasJsonLoader');
 
 const isWebpack1 = getWebpackVersion() < 2;
-const sourceDir = path.resolve(__dirname, '../theme');
-const htmlLoader = require.resolve('html-webpack-plugin/lib/loader');
+const sourceDir = path.resolve(__dirname, '../src');
 
 module.exports = function (config, env) {
     process.env.NODE_ENV = process.env.NODE_ENV || env;
@@ -18,22 +18,25 @@ module.exports = function (config, env) {
     const isProd = env === 'production';
 
     let webpackConfig = {
-        entry: [path.resolve(sourceDir, `template/${config.type}/index`)],
+        entry: {
+            index: [path.resolve(sourceDir, `template/${config.type}/index.js`)]
+        },
         output: {
-            path: config.outdir,
-            filename: 'build/[name].bundle.js',
-            chunkFilename: 'build/[name].js',
+            path: path.join(process.cwd(), config.outdir),
+            publicPath: '/' + config.outdir,
+            filename: '[name].bundle.js',
+            chunkFilename: '[name].js',
         },
         resolve: {
-            extensions: isWebpack1 ? ['.js', '.jsx', '.json', '.less', ''] : ['.js', '.jsx', '.less', '.json'],
+            extensions: isWebpack1 ? ['','.js', '.jsx', '.json', '.less'] : ['.js', '.jsx', '.less', '.json'],
             alias: {
-                docConfig: path.path(process.cwd(), config.outdir, 'doc'),
+                docConfig: path.join(process.cwd(), config.outdir, 'doc'),
             },
         },
         module: {
             loaders: [{
                 test: /\.js|.jsx$/,
-                loaders: ['babel'],
+                loaders: ['babel-loader'],
                 exclude: /node_modules/
             }, {
                 test: /\.less$/,
@@ -48,7 +51,7 @@ module.exports = function (config, env) {
             },
             {
                 test: /\.md$/,
-                loader: 'babel!markdown-it-gfs-loader'
+                loader: 'babel-loader!markdown-it-gfs-loader'
             }]
         },
         plugins: [
@@ -100,12 +103,15 @@ module.exports = function (config, env) {
         }
     } else {
         webpackConfig = merge(webpackConfig, {
-            entry: [require.resolve('react-dev-utils/webpackHotDevClient')],
             stats: {
                 colors: true,
                 reasons: true,
             },
             plugins: [new webpack.HotModuleReplacementPlugin()],
+            devServer: {
+                hot: true,
+                inline: true
+            }
         });
     }
 
