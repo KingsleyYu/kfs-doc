@@ -14,7 +14,7 @@
     "url": "git+https://github.com/KingsleyYu/kfs-doc.git"
   },
   "bin": {
-    "kfsdoc": "bin/gfsdoc.js"
+    "kfsdoc": "bin/kfsdoc.js"
   },
   "author": "",
   "license": "ISC",
