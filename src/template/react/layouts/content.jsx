@@ -11,13 +11,15 @@ class ContentLayout extends React.Component {
             name: '',
             description: '',
         }
+
+        this.getClassData=this.getClassData.bind(this);
     }
 
     componentDidMount() {
 
     }
 
-    getClassData = (routeParams) => {
+    getClassData(routeParams){
         let className = routeParams.name;
         let classData = DocConfig.getDataByClass(className)
 

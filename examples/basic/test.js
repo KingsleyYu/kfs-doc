@@ -1,0 +1,1 @@
+var build = require('./node_modules/kfs-doc/bin/kfsdoc.js')

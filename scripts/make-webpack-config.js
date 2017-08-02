@@ -27,17 +27,20 @@ module.exports = function (config, env) {
             filename: '[name].bundle.js',
             chunkFilename: '[name].js',
         },
+        resolveLoader: {
+            root: path.join(__dirname, 'node_modules')
+        },
         resolve: {
             extensions: isWebpack1 ? ['','.js', '.jsx', '.json', '.less'] : ['.js', '.jsx', '.less', '.json'],
             alias: {
                 docConfig: path.join(process.cwd(), config.outdir, 'doc'),
+                component: path.join(process.cwd(), config.project.entry)
             },
         },
         module: {
             loaders: [{
                 test: /\.js|.jsx$/,
-                loaders: ['babel-loader'],
-                exclude: /node_modules/
+                loaders: ['babel-loader']
             }, {
                 test: /\.less$/,
                 loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
@@ -65,6 +68,7 @@ module.exports = function (config, env) {
                     NODE_ENV: JSON.stringify(env),
                 },
             }),
+            new ExtractTextPlugin('css/[name].css'),
         ],
         performance: {
             hints: false,
