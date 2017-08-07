@@ -3,9 +3,11 @@
 const Y = require('yuidocjs')
 const minimist = require('minimist');
 const chalk = require('chalk');
-const getConfig = require('../scripts/config');
-const GfsDocError = require('../scripts/utils/error');
+const chokidar = require('chokidar');
+const webpack = require('webpack');
 
+const getConfig = require('../scripts/config');
+const makeWebpackConfig = require('../scripts/make-webpack-config');
 const argv = minimist(process.argv.slice(2));
 const command = argv._[0];
 const logger = Y.log;
@@ -20,18 +22,8 @@ let config;
 try {
     config = getConfig(argv.config);
 } catch (err) {
-    if (err instanceof GfsDocError) {
-        printErrorWithLink(
-            err.message,
-            err.extra + '\n\n' + 'Learn how to configure your kfs-doc:'
-        );
-        process.exit(1);
-    } else {
-        throw err;
-    }
+    console.log('no doc config file found...')
 }
-
-config.verbose = config.verbose || argv.verbose;
 
 switch (command) {
     case "dev":
@@ -45,17 +37,40 @@ switch (command) {
 
 
 function commandDev() {
-    logger('Building gfs doc guide...');
+    const server = require('../scripts/server');
+    const doc = require('../scripts/doc');
+    const devServer=require('../scripts/devServer');
 
-    const build = require('../scripts/dev');
-    build(config, 'development', err => {
-        if (err) {
-            console.error(err);
-            process.exit(1);
-        } else {
-            logger('kfs-doc is running:' + chalk.underline(config.outdir));
-        }
-    });
+    doc.build(config,()=>{
+        devServer(config)
+    })
+
+    // doc.build(config, () => {
+    //     const webpackConfig = makeWebpackConfig(config, "development");
+    //     webpack(webpackConfig)
+    //     const compiler = server(config, err => {
+    //         if (err) {
+    //             console.error(err);
+    //         } else {
+    //             const isHttps = compiler.options.devServer && compiler.options.devServer.https;
+
+    //             // chokidar.watch(currentDir).on('change', (event, p) => {
+    //             //     if (path.extname(p) !== ".md") {
+    //             //         doc.build(config);
+    //             //     }
+    //             // })
+
+    //             logger(
+    //                 'doc guide server started at:\n' +
+    //                 (isHttps ? 'https' : 'http') +
+    //                 '://' +
+    //                 config.serverHost || 'localhost' +
+    //                 ':' +
+    //                 config.serverPort || 9003
+    //             );
+    //         }
+    //     });
+    // })
 }
 
 function commandBuild() {
@@ -67,26 +82,7 @@ function commandBuild() {
             console.error(err);
             process.exit(1);
         } else {
-            logger.info('kfs-doc published to:\n' + chalk.underline(config.styleguideDir));
+            logger('kfs-doc published to:\n' + chalk.underline(config.styleguideDir));
         }
     });
 }
-
-
-
-function printErrorWithLink(message, linkTitle, linkUrl) {
-    console.error(`${chalk.bold.red(message)}\n\n${linkTitle}\n${chalk.underline(linkUrl)}\n`);
-}
-
-
-function printErrors(header, errors, originalErrors, printer) {
-    console.error(printer(header));
-    const messages = argv.verbose ? originalErrors : errors;
-    messages.forEach(message => {
-        console.error(message.message || message);
-    });
-}
-
-
-
-console.log('============================== this is kfsdoc =====================')

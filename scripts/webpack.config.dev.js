@@ -12,15 +12,16 @@ const hasJsonLoader = require('./utils/hasJsonLoader');
 const isWebpack1 = getWebpackVersion() < 2;
 const sourceDir = path.resolve(__dirname, '../src');
 
-module.exports = function (config, env) {
-    process.env.NODE_ENV = process.env.NODE_ENV || env;
-
-    const isProd = env === 'production';
-
+module.exports = function (config) {
     let webpackConfig = {
-        entry: {
-            index: [path.resolve(sourceDir, `template/${config.type}/index.js`)]
-        },
+        devtool: 'cheap-module-eval-source-map',
+        entry: [
+            'regenerator-runtime/runtime',
+            // listen to code updates emitted by hot middleware:
+            'webpack-hot-middleware/client',
+            // your code:
+            path.resolve(sourceDir, `template/${config.type}/index.js`)
+        ],
         output: {
             path: path.join(process.cwd(), config.outdir),
             publicPath: '/',
@@ -61,70 +62,19 @@ module.exports = function (config, env) {
             }]
         },
         plugins: [
+            new webpack.HotModuleReplacementPlugin(),
             new HtmlWebpackPlugin({
                 title: config.title,
                 template: path.join(sourceDir, 'index.html'),
                 inject: true,
             }),
-            new webpack.DefinePlugin({
-                'process.env': {
-                    NODE_ENV: JSON.stringify(env),
-                },
-            }),
             new ExtractTextPlugin('css/[name].css'),
         ],
-        performance: {
-            hints: false,
-        },
-    };
-
-    if (isProd) {
-        webpackConfig = merge(webpackConfig, {
-            output: {
-                filename: 'build/bundle.[chunkhash:8].js',
-                chunkFilename: 'build/[name].[chunkhash:8].js',
-            },
-            plugins: [
-                new webpack.optimize.OccurrenceOrderPlugin(),
-                new webpack.optimize.UglifyJsPlugin({
-                    compress: {
-                        keep_fnames: true,
-                        screw_ie8: true,
-                        warnings: false,
-                    },
-                    output: {
-                        comments: false,
-                    },
-                    mangle: {
-                        keep_fnames: true,
-                    },
-                }),
-                new CleanWebpackPlugin(['build'], {
-                    root: config.outdir,
-                    verbose: config.verbose,
-                }),
-            ],
-        });
-        if (isWebpack1) {
-            webpackConfig.plugins.push(new webpack.optimize.DedupePlugin());
+        stats: {
+            colors: true,
+            reasons: true,
         }
-    } else {
-        webpackConfig = merge(webpackConfig, {
-            stats: {
-                colors: true,
-                reasons: true,
-            },
-            plugins: [new webpack.HotModuleReplacementPlugin()],
-            devServer: {
-                hot: true,
-                inline: true
-            }
-        });
-    }
-
-    if (config.webpackConfig) {
-        webpackConfig = mergeWebpackConfig(webpackConfig, config.webpackConfig, env);
-    }
+    };
 
     if (isWebpack1 && !hasJsonLoader(webpackConfig)) {
         webpackConfig = merge(webpackConfig, {
@@ -138,6 +88,7 @@ module.exports = function (config, env) {
             },
         });
     }
+    return webpackConfig
+}
 
-    return webpackConfig;
-};
+
