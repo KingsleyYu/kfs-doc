@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const os = require('os');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const merge = require('webpack-merge');
@@ -9,8 +10,12 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const getWebpackVersion = require('./utils/getWebpackVersion');
 const hasJsonLoader = require('./utils/hasJsonLoader');
 
+var HappyPack = require('happypack');
+var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
+
 const isWebpack1 = getWebpackVersion() < 2;
 const sourceDir = path.resolve(__dirname, '../src');
+const nodeModulesPath = path.resolve(__dirname, '../node_modules')
 
 module.exports = function (config, env) {
     process.env.NODE_ENV = process.env.NODE_ENV || env;
@@ -42,11 +47,11 @@ module.exports = function (config, env) {
         module: {
             loaders: [{
                 test: /\.js|.jsx$/,
-                loaders: ['babel-loader'],
-                exclude: path.resolve(__dirname, '../node_modules/')
+                loader: 'happypack/loader?id=happybabel'
             }, {
                 test: /\.less$/,
-                loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
+                loaders: ["style-loader", "css-loader", "less-loader"],
+                include: path.join(sourceDir, 'styles')
             }, {
                 test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
                 loader: 'file-loader?name=./iconfont/[name].[ext]'
@@ -61,6 +66,13 @@ module.exports = function (config, env) {
             }]
         },
         plugins: [
+            //add HappyPack for improve the build performance
+            new HappyPack({
+                id: 'happybabel',
+                loaders: ['babel-loader?compact=false'],
+                threadPool: happyThreadPool,
+                verbose: true
+            }),
             new HtmlWebpackPlugin({
                 title: config.title,
                 template: path.join(sourceDir, 'index.html'),

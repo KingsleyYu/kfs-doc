@@ -11,7 +11,7 @@ const path = require('path');
 const findup = require('findup');
 const isString = require('lodash/isString');
 const merge = require('lodash/merge');
-const GfsDocError = require('./utils/error');
+
 
 const PKG = require(path.resolve(process.cwd(), 'package.json'));
 const CONFIG_FILENAME = 'doc.config.js';
@@ -24,7 +24,7 @@ function getConfig(config) {
     if (isString(config)) {
         configFilepath = path.resolve(process.cwd(), config);
         if (!fs.existsSync(configFilepath)) {
-            throw new GfsDocError('doc config not found: ' + configFilepath + '.');
+            console.error('doc config not found: ' + configFilepath + '.')
         }
         config = {};
     } else {
@@ -35,6 +35,7 @@ function getConfig(config) {
         config = require(configFilepath);
 
         config.type = config.type || "react";
+        config.path = config.paths[0]
         config.rootOutDir = config.outdir || "doc/";
         config.outdir = path.join(config.outdir || 'doc', PKG.version, '/');
         config.project.version = PKG.version;

@@ -1,27 +1,32 @@
 'use strict';
 
 const path = require('path');
+const os = require('os');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const merge = require('webpack-merge');
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const getWebpackVersion = require('./utils/getWebpackVersion');
 const hasJsonLoader = require('./utils/hasJsonLoader');
 
+var HappyPack = require('happypack');
+var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
+
+
 const isWebpack1 = getWebpackVersion() < 2;
 const sourceDir = path.resolve(__dirname, '../src');
+const nodeModulesPath = path.resolve(__dirname, '../node_modules')
 
 module.exports = function (config) {
     let webpackConfig = {
         devtool: 'cheap-module-eval-source-map',
-        entry: [
-            'regenerator-runtime/runtime',
-            // listen to code updates emitted by hot middleware:
-            'webpack-hot-middleware/client',
-            // your code:
-            path.resolve(sourceDir, `template/${config.type}/index.js`)
-        ],
+        entry: {
+            "index": [
+                'regenerator-runtime/runtime',
+                'webpack-hot-middleware/client',
+                path.join(sourceDir, `template/${config.type}/index.js`)
+            ],
+            vendors: ['react']
+        },
         output: {
             path: path.join(process.cwd(), config.outdir),
             publicPath: '/',
@@ -29,9 +34,7 @@ module.exports = function (config) {
             chunkFilename: '[name].js',
         },
         resolveLoader: {
-            modulesDirectories: [
-                path.resolve(__dirname, '../node_modules')
-            ]
+            modulesDirectories: [nodeModulesPath]
         },
         resolve: {
             extensions: isWebpack1 ? ['', '.js', '.jsx', '.json', '.less'] : ['.js', '.jsx', '.less', '.json'],
@@ -42,12 +45,12 @@ module.exports = function (config) {
         },
         module: {
             loaders: [{
-                test: /\.js|.jsx$/,
-                loaders: ['babel-loader'],
-                exclude: path.resolve(__dirname, '../node_modules/')
+                test: /\.js[x]?$/,
+                loader: 'happypack/loader?id=happybabel'
             }, {
                 test: /\.less$/,
-                loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
+                loaders: ["style-loader", "css-loader", "less-loader"],
+                include: path.join(sourceDir, 'styles')
             }, {
                 test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
                 loader: 'file-loader?name=./iconfont/[name].[ext]'
@@ -62,13 +65,23 @@ module.exports = function (config) {
             }]
         },
         plugins: [
+            //add HappyPack for improve the build performance
+            new HappyPack({
+                id: 'happybabel',
+                loaders: ['babel-loader?compact=false'],
+                threadPool: happyThreadPool,
+                verbose: true
+            }),
             new webpack.HotModuleReplacementPlugin(),
             new HtmlWebpackPlugin({
                 title: config.title,
                 template: path.join(sourceDir, 'index.html'),
                 inject: true,
             }),
-            new ExtractTextPlugin('css/[name].css'),
+            new webpack.optimize.CommonsChunkPlugin({
+                name: "vendors",
+                minChunks: Infinity
+            })
         ],
         stats: {
             colors: true,

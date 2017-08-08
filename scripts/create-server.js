@@ -9,6 +9,7 @@ const makeWebpackConfig = require('./make-webpack-config');
 module.exports = function createServer(config, port, env) {
     const webpackConfig = makeWebpackConfig(config, env);
     const webpackDevServerConfig = merge(webpackConfig.devServer, {
+        noInfo: true,
         hot: true,
         historyApiFallback: true,
         stats: {
