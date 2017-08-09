@@ -4,7 +4,7 @@ import React from 'react'
 /**
  * 按钮组件
  * @class Button
- * @module 表单组件
+ * @module 表单组件1313
  * @submodule form
  * @extends Component
  * @constructor
