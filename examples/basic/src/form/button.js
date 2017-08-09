@@ -13,7 +13,11 @@ import React from 'react'
 class Button extends React.Component{
     render(){
         return (
-            <button> Button </button>
+            <div>
+                <p>button</p>
+                <button> Button </button>
+            </div>
+            
         )
     }
 }
