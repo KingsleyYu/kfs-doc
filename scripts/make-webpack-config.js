@@ -14,7 +14,7 @@ var HappyPack = require('happypack');
 var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 
 const isWebpack1 = getWebpackVersion() < 2;
-const sourceDir = path.resolve(__dirname, '../src');
+const sourceDir = path.resolve(__dirname, '../dist');
 const nodeModulesPath = path.resolve(__dirname, '../node_modules')
 
 module.exports = function (config, env) {
@@ -50,8 +50,7 @@ module.exports = function (config, env) {
                 loader: 'happypack/loader?id=happybabel'
             }, {
                 test: /\.less$/,
-                loaders: ["style-loader", "css-loader", "less-loader"],
-                include: path.join(sourceDir, 'styles')
+                loaders: ["style-loader", "css-loader", "less-loader"]
             }, {
                 test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
                 loader: 'file-loader?name=./iconfont/[name].[ext]'
@@ -75,7 +74,7 @@ module.exports = function (config, env) {
             }),
             new HtmlWebpackPlugin({
                 title: config.title,
-                template: path.join(sourceDir, 'index.html'),
+                template: path.resolve(__dirname, '../templates/index.html'),
                 inject: true,
             }),
             new webpack.DefinePlugin({

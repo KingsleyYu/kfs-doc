@@ -52,7 +52,7 @@ export default
     },
     "modules": {
         "表单组件1313": {
-            "name": "表单组件1212121",
+            "name": "表单组件",
             "submodules": [
                 {
                     "name": "form",

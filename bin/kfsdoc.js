@@ -14,6 +14,10 @@ const command = argv._[0];
 const logger = Y.log;
 
 
+// check dependencies 
+require('../scripts/utils/checkDependencies');
+
+
 const env = command === 'build' ? 'production' : 'development';
 process.env.NODE_ENV = process.env.NODE_ENV || env;
 
