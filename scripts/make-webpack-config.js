@@ -7,13 +7,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const getWebpackVersion = require('./utils/getWebpackVersion');
+const getPackageVersion = require('./utils/getPackageVersion');
 const hasJsonLoader = require('./utils/hasJsonLoader');
 
 var HappyPack = require('happypack');
 var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 
-const isWebpack1 = getWebpackVersion() < 2;
+const isWebpack1 = getPackageVersion('webpack') < 2;
 const sourceDir = path.resolve(__dirname, '../src');
 const nodeModulesPath = path.resolve(__dirname, '../node_modules')
 const template=path.resolve(__dirname, '../scripts/templates/index.html')
