@@ -16,6 +16,7 @@ var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 const isWebpack1 = getWebpackVersion() < 2;
 const sourceDir = path.resolve(__dirname, '../dist');
 const nodeModulesPath = path.resolve(__dirname, '../node_modules')
+const template=path.resolve(__dirname, '../scripts/templates/index.html')
 
 module.exports = function (config, env) {
     process.env.NODE_ENV = process.env.NODE_ENV || env;
@@ -31,11 +32,6 @@ module.exports = function (config, env) {
             publicPath: '/',
             filename: '[name].bundle.js',
             chunkFilename: '[name].js',
-        },
-        resolveLoader: {
-            modulesDirectories: [
-                path.resolve(__dirname, '../node_modules')
-            ]
         },
         resolve: {
             extensions: isWebpack1 ? ['', '.js', '.jsx', '.json', '.less'] : ['.js', '.jsx', '.less', '.json'],
@@ -73,7 +69,7 @@ module.exports = function (config, env) {
                 verbose: true
             }),
             new HtmlWebpackPlugin({
-                title: config.title,
+                title: config.project.name,
                 template: path.resolve(__dirname, '../templates/index.html'),
                 inject: true,
             }),
