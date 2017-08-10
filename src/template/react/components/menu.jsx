@@ -20,7 +20,7 @@ class Menu extends React.Component {
 
         if (menu.subMenus && menu.subMenus.length) {
             menuItem = (
-                <li key={menu.name} className="nav-item">
+                <div>
                     <span className="module">{menu.name}</span>
                     <ul className="pure-menu-list sub-nav">
                         {
@@ -33,11 +33,13 @@ class Menu extends React.Component {
                             })
                         }
                     </ul>
-                </li>
+                </div>
             )
         }
         else {
-            menuItem = <li className="nav-item"><Link to={'/components/' + menu.key} className="module">{menu.name}</Link></li>
+            menuItem = (
+                <Link to={'/components/' + menu.key} className="module">{menu.name}</Link>
+            )
         }
 
         return menuItem;
@@ -52,9 +54,9 @@ class Menu extends React.Component {
         const { menu, type } = this.props;
 
         return (
-            {   
-                this.getMenu(menu)
-            }
+            <li className="nav-item" key={menu.name}>
+                {this.getMenu(menu)}
+            </li>
         )
     }
 }

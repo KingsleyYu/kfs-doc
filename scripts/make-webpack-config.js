@@ -14,7 +14,7 @@ var HappyPack = require('happypack');
 var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 
 const isWebpack1 = getWebpackVersion() < 2;
-const sourceDir = path.resolve(__dirname, '../dist');
+const sourceDir = path.resolve(__dirname, '../src');
 const nodeModulesPath = path.resolve(__dirname, '../node_modules')
 const template=path.resolve(__dirname, '../scripts/templates/index.html')
 
@@ -70,7 +70,7 @@ module.exports = function (config, env) {
             }),
             new HtmlWebpackPlugin({
                 title: config.project.name,
-                template: path.resolve(__dirname, '../templates/index.html'),
+                template: template,
                 inject: true,
             }),
             new webpack.DefinePlugin({

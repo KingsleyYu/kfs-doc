@@ -9,6 +9,7 @@ const webpack = require('webpack');
 
 const getConfig = require('../scripts/config');
 const makeWebpackConfig = require('../scripts/make-webpack-config');
+const GfsDocError = require('../scripts/utils/error');
 const argv = minimist(process.argv.slice(2));
 const command = argv._[0];
 const logger = Y.log;
@@ -45,9 +46,10 @@ function commandDev() {
     const doc = require('../scripts/doc');
     const devServer = require('../scripts/server');
     const currentDir = path.join(process.cwd(), config.path);
-    console.log(currentDir)
     const port = config.port || 9003;
+
     doc.build(config, () => {
+
         devServer(config, err => {
             if (err) {
                 console.error(err);
@@ -78,3 +80,6 @@ function commandBuild() {
         }
     });
 }
+
+
+
