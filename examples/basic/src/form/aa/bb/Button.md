@@ -1,7 +1,7 @@
 :::config
-    @class Dialog
     @module 基础组件
-    @submodule 弹框
+    @submodule 按钮2
+    @class button2
 :::
 
 <script>

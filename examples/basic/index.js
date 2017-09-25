@@ -8,7 +8,6 @@ class App extends React.Component{
         super();
     }
     render() {
-        //JSX here!
         return (
           <div className="container">
             <section className="jumbotron">
