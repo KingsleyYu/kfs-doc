@@ -1,9 +1,8 @@
 {
-  "name": "demo2",
+  "name": "kfs-doc",
   "version": "1.0.9",
   "description": "A Vue.js project",
   "author": "yuxiaochen <yuxiaochen02@meituan.com>",
-  "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
