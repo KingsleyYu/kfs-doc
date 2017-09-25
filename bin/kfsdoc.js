@@ -6,17 +6,21 @@ const minimist = require('minimist');
 const chalk = require('chalk');
 const chokidar = require('chokidar');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ProgressPlugin = require('webpack/lib/ProgressPlugin');
 
 const getConfig = require('../scripts/config');
-const makeWebpackConfig = require('../scripts/make-webpack-config');
-const GfsDocError = require('../scripts/utils/error');
+// const makeWebpackConfig = require('../scripts/make-webpack-config');
+// const GfsDocError = require('../scripts/utils/error');
 const argv = minimist(process.argv.slice(2));
 const command = argv._[0];
 const logger = Y.log;
 
 
+
+
 // check dependencies 
-require('../scripts/utils/checkDependencies');
+// require('../scripts/utils/checkDependencies');
 
 
 const env = command === 'build' ? 'production' : 'development';
@@ -31,55 +35,69 @@ try {
     console.error('no doc config file found...')
 }
 
-switch (command) {
-    case "dev":
-        commandDev();
-    case 'build':
-        commandBuild();
-        break;
-    default:
-        commandDev();
-}
+console.log("process.cwd()", process.cwd())
+console.log('output.path', path.join(process.cwd(), config.outdir));
+console.log('template path',path.resolve(__dirname, '../scripts/templates/index.html'))
 
 
-function commandDev() {
-    const doc = require('../scripts/doc');
-    const devServer = require('../scripts/server');
-    const currentDir = path.join(process.cwd(), config.path);
-    const port = config.port || 9003;
+const doc = require('../scripts/doc');
 
-    doc.build(config, () => {
-
-        devServer(config, err => {
-            if (err) {
-                console.error(err);
-                process.exit(1);
-            }
-            chokidar.watch(currentDir).on('change', (p) => {
-                console.log(p)
-                if (path.extname(p) !== ".md") {
-                    doc.build(config);
-                }
-            })
-        })
-    })
+doc.build(config,()=>{
+    require('../build/dev-server.js')
+})
 
 
-}
 
-function commandBuild() {
-    logger('Building gfs doc guide...');
+// require('../build/build.js')
 
-    const build = require('../scripts/build');
-    const compiler = build(config, err => {
-        if (err) {
-            console.error(err);
-            process.exit(1);
-        } else {
-            logger('kfs-doc published to:\n' + chalk.underline(config.styleguideDir));
-        }
-    });
-}
+
+
+// switch (command) {
+//     case "dev":
+//         commandDev();
+//     case 'build':
+//         commandBuild();
+//         break;
+//     default:
+//         commandDev();
+// }
+
+
+// function commandDev() {
+//     const doc = require('../scripts/doc');
+//     const devServer = require('../scripts/server');
+//     const currentDir = path.join(process.cwd(), config.path);
+//     const port = config.port || 9003;
+
+//     doc.build(config, () => {
+//         devServer(config, err => {
+//             if (err) {
+//                 console.error(err);
+//                 process.exit(1);
+//             }
+//             chokidar.watch(currentDir).on('change', (p) => {
+//                 console.log(p)
+//                 if (path.extname(p) !== ".md") {
+//                     doc.build(config);
+//                 }
+//             })
+//         })
+//     })
+// }
+
+// function commandBuild() {
+//     logger('Building gfs doc guide...');
+
+//     const build = require('../scripts/build');
+//     const compiler = build(config, err => {
+//         if (err) {
+//             console.error(err);
+//             process.exit(1);
+//         } else {
+//             logger('kfs-doc published to:\n' + chalk.underline(config.styleguideDir));
+//         }
+//     });
+// }
 
 
 
