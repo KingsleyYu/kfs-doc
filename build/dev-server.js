@@ -25,7 +25,6 @@ var proxyTable = config.dev.proxyTable
 var app = express()
 var compiler = webpack(webpackConfig)
 
-console.log('contentBase',path.resolve(process.cwd(),'./doc/1.0.8/'))
 
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
   // publicPath: webpackConfig.output.publicPath,

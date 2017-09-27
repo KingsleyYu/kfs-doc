@@ -3,13 +3,11 @@ var fs = require('fs')
 var utils = require('./utils')
 var config = require('../config')
 var vueLoaderConfig = require('./vue-loader.conf')
+var md=require('markdown-it')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
-var docConfig=require('../scripts/config')()
-
-console.log("docConfig",path.join(process.cwd(), docConfig.outdir, 'doc'))
 
 module.exports = {
   context:path.resolve(__dirname),
@@ -27,8 +25,7 @@ module.exports = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
-      'docConfig': path.join(process.cwd(), docConfig.outdir, 'doc'),
+      '@': resolve('src')
     },
     symlinks: false
   },

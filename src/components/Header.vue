@@ -1,20 +1,26 @@
 <template>
-    <div class="header-wrapper">
-        <header class="header">
-            <div class="container">
-                <div class="title">
-                    <h1>{{data.name}}</h1>
-                    <h3>{{data.description}}</h3>
+    <div id="header">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-4 col-md-3 title">
+                    <span aria-hidden="true" class="glyphicon glyphicon-th-list visible-xs-inline-block"></span>
+                    <div class="name">
+                        <h1>商家线 UI库</h1>
+                        <h3>phoenix-ui</h3>
+                    </div>
                 </div>
-                <div class="right">
-                    <ul class="menu">
-                        <li v-for="(item,index) in data.navs" :key="item.name" :class="index==0?'active':''">
-                            <a :href="item.url">{{item.name}}</a>
+                <div class="col-xs-0 col-sm-8 col-md-9 hidden-xs menu">
+                    <ul>
+                        <li class="active">
+                            <a href="#">设计</a>
+                        </li>
+                        <li>
+                            <a href="#">开发</a>
                         </li>
                     </ul>
                 </div>
             </div>
-        </header>
+        </div>
     </div>
 </template>
 
@@ -29,71 +35,75 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
-.header-wrapper {
-    height: 97px;
-    &>.header {
-        height: 97px;
-        background-color: #393943;
-        color: #fff;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 100;
-        position: fixed;
-        .container {
-            height: 100%;
+<style lang="less" scoped >
+#header {
+    transition: opacity .5s;
+    background: #393943;
+    height: 90px;
+    margin-bottom: 24px;
+    padding: 0 48px;
+    width: 100%;
 
-            &:after {
-                clear: both;
-                content: " ";
-                display: block;
-                font-size: 0;
-                height: 0;
-                visibility: hidden;
+    .title {
+        padding-top: 20px;
+        .glyphicon-th-list {
+            display: inline;
+            font-size: 30px;
+            color: #fff;
+            position: relative;
+            top: -12px;
+            margin-right: 20px;
+            cursor: pointer;
+            margin-left: -20px;
+        }
+        .name {
+            display: inline-block;
+            h1,
+            h3 {
+                margin: 0;
+                color: #fff;
+                font-weight: 400;
             }
 
-            .title {
-                padding-top: 20px;
-                float: left;
-                color: #fff;
-                h1 {
-                    font-weight: 400;
-                    font-size: 22px;
-                }
+            h1 {
+                font-size: 22px;
+                margin-bottom: 5px;
+            }
 
-                h3 {
-                    font-weight: 400;
-                    font-size: 16px;
-                }
+            h3 {
+                font-size: 16px;
             }
         }
+    }
 
-        .right {
-            float: right;
-            height: 100%;
-            .menu {
-                display: inline-block;
-                list-style: none outside;
-                li {
-                    float: left;
-                    margin-right: 60px;
-                    display: inline;
-                    min-width: 33px;
-                    &>a {
-                        padding: 0 15px;
-                        height: 95px;
-                        line-height: 95px;
-                        display: inline-block;
-                        text-decoration: none;
-                        cursor: pointer;
-                        font-size: 20px;
-                        color: #fff;
-                        letter-spacing: 0;
-                    }
-                    &.active {
-                        border-bottom: 2px solid #FF6633;
-                    }
+    .menu {
+        text-align: right;
+
+        ul {
+            display: inline-block;
+            list-style: none outside;
+
+            li {
+                float: left;
+                margin-right: 60px;
+                display: inline;
+                min-width: 33px;
+                &.active {
+                    position: relative;
+                    bottom: 2px;
+                    border-bottom: 2px solid #FF6633;
+                }
+
+                &>a {
+                    padding: 0 15px;
+                    height: 90px;
+                    line-height: 90px;
+                    display: inline-block;
+                    text-decoration: none;
+                    cursor: pointer;
+                    font-size: 20px;
+                    color: #fff;
+                    letter-spacing: 0;
                 }
             }
         }

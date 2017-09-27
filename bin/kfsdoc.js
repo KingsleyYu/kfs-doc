@@ -1,26 +1,12 @@
 #!/usr/bin/env node
 
-const Y = require('yuidocjs')
 const path = require('path')
 const minimist = require('minimist');
 const chalk = require('chalk');
 const chokidar = require('chokidar');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ProgressPlugin = require('webpack/lib/ProgressPlugin');
-
 const getConfig = require('../scripts/config');
-// const makeWebpackConfig = require('../scripts/make-webpack-config');
-// const GfsDocError = require('../scripts/utils/error');
 const argv = minimist(process.argv.slice(2));
 const command = argv._[0];
-const logger = Y.log;
-
-
-
-
-// check dependencies 
-// require('../scripts/utils/checkDependencies');
 
 
 const env = command === 'build' ? 'production' : 'development';
@@ -34,10 +20,6 @@ try {
 } catch (err) {
     console.error('no doc config file found...')
 }
-
-console.log("process.cwd()", process.cwd())
-console.log('output.path', path.join(process.cwd(), config.outdir));
-console.log('template path',path.resolve(__dirname, '../scripts/templates/index.html'))
 
 
 const doc = require('../scripts/doc');
