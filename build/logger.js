@@ -5,9 +5,9 @@
 const chalk = require('chalk');
 
 
-export default {
+module.exports = {
     info(msg) {
-        console.log(chalk.bgCyan(`info=>${msg}`));
+        console.log(chalk.cyan(`info=>${msg}`));
     },
 
     debug(msg) {
