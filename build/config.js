@@ -2,14 +2,61 @@
 
 const fs = require('fs');
 const path = require('path');
+const findup = require('findup');
+const isString = require('lodash/isString');
+const merge = require('lodash/merge');
+const logger = require('./logger');
+
+const PKG = require(path.resolve(process.cwd(), 'package.json'));
+const CONFIG_FILENAME = 'doc.config.js';
 
 
-module.exports = function (config, env) {
-    process.env.NODE_ENV = process.env.NODE_ENV || env;
+function getConfig(config) {
+    let baseConfig = getBaseConfig(config);
+
+    let webpackConfig = getWebpackConfig(baseConfig);
 
     return {
+        base: baseConfig,
+        build: webpackConfig.build,
+        dev: webpackConfig.dev
+    }
+}
+
+function getBaseConfig(config) {
+    config = config || {};
+
+    let configFilepath;
+    if (isString(config)) {
+        configFilepath = path.resolve(process.cwd(), config);
+        if (!fs.existsSync(configFilepath)) {
+            logger.error('doc config not found: ' + configFilepath + '.')
+        }
+    } else {
+        configFilepath = findConfigFile();
+    }
+
+    if (configFilepath) {
+        config = require(configFilepath);
+        config.type = config.type || "react";
+        config.path = config.paths[0]
+        config.rootOutDir = config.outdir || "doc/";
+        config.outdir = "";
+        config.outdir = path.join(config.outdir || 'doc', PKG.version, '/');
+        config.project.version = PKG.version;
+    }
+    const mergedConfig = merge({}, config);
+
+    return mergedConfig;
+}
+
+
+function getWebpackConfig(config) {
+    return {
         build: {
-            env: require('./prod.env'),
+            env: {
+                NODE_ENV: '"production"'
+            },
             index: path.resolve(__dirname, '../dist/index.html'),
             assetsRoot: path.join(process.cwd(), config.outdir),
             assetsSubDirectory: 'static',
@@ -28,8 +75,10 @@ module.exports = function (config, env) {
             bundleAnalyzerReport: process.env.npm_config_report
         },
         dev: {
-            env: require('./dev.env'),
-            port: 8088,
+            env: {
+                NODE_ENV: '"development"'
+            },
+            port: config.port || 8088,
             autoOpenBrowser: true,
             assetsSubDirectory: 'static',
             assetsPublicPath: './',
@@ -43,3 +92,22 @@ module.exports = function (config, env) {
         }
     }
 }
+
+
+/**
+ * Try to find config file up the file tree.
+ *
+ * @return {string|boolean} Config absolute file path.
+ */
+function findConfigFile() {
+    let configDir;
+    try {
+        configDir = findup.sync(process.cwd(), CONFIG_FILENAME);
+    } catch (exception) {
+        return false;
+    }
+
+    return path.join(configDir, CONFIG_FILENAME);
+}
+
+module.exports = getConfig;

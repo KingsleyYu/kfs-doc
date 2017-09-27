@@ -1,85 +1,72 @@
 #!/usr/bin/env node
 
-const path = require('path')
+
 const minimist = require('minimist');
+const path = require('path');
 const chalk = require('chalk');
 const chokidar = require('chokidar');
-const getConfig = require('../scripts/config');
 const argv = minimist(process.argv.slice(2));
 const command = argv._[0];
+const doc = require('../build/doc')
+const getConfig = require('../build/config');
+const logger = require('../build/logger');
 
 
-const env = command === 'build' ? 'production' : 'development';
-process.env.NODE_ENV = process.env.NODE_ENV || env;
-
-
-//读取配置数据
-let config;
-try {
-    config = getConfig(argv.config);
-} catch (err) {
-    console.error('no doc config file found...')
+let env = "development";
+if (command === "build" || command == "deploy") {
+    env = "production";
 }
 
+process.env.NODE_ENV = process.env.NODE_ENV || env;
 
-const doc = require('../scripts/doc');
+process.on('uncaughtException', err => {
+    if (err.code === 'EADDRINUSE') {
+        logger.info(
+            `You have another server running at port ${config.serverPort} somewhere, shut it down first`,
+            'You can change the port using the `serverPort` option in your style guide config:'
+        );
+    } else {
+        logger.error('--------------------------------------------------------------------------');
+        logger.error('An uncaught gfsdoc error has occurred, stack trace given below');
+        logger.error('--------------------------------------------------------------------------');
+        logger.error(err.stack || err.message || err);
+        logger.error('--------------------------------------------------------------------------');
+        logger.error('Node.js version: ' + process.version);
+        logger.error('--------------------------------------------------------------------------');
+    }
+    process.exit(1);
+});
 
-doc.build(config,()=>{
-    require('../build/dev-server.js')
+// Load gfsdoc guide config
+let config;
+try {
+    //kfsdoc develop --config examples/doc.config.js
+    config = getConfig(argv.config);
+} catch (err) {
+    logger.error('no doc config file found...')
+    process.exit(1);
+}
+
+logger.info('Start gfsdoc...')
+doc.build(config, () => {
+    switch (command) {
+        case 'build':
+            commandBuild();
+            break;
+        case 'dev':
+            commandDev();
+            break;
+        default:
+            commandDev();
+    }
 })
 
 
 
-// require('../build/build.js')
+function commandDev() {
+    require(path.resolve(__dirname, '..', 'build/dev-server.js'));
+}
 
-
-
-// switch (command) {
-//     case "dev":
-//         commandDev();
-//     case 'build':
-//         commandBuild();
-//         break;
-//     default:
-//         commandDev();
-// }
-
-
-// function commandDev() {
-//     const doc = require('../scripts/doc');
-//     const devServer = require('../scripts/server');
-//     const currentDir = path.join(process.cwd(), config.path);
-//     const port = config.port || 9003;
-
-//     doc.build(config, () => {
-//         devServer(config, err => {
-//             if (err) {
-//                 console.error(err);
-//                 process.exit(1);
-//             }
-//             chokidar.watch(currentDir).on('change', (p) => {
-//                 console.log(p)
-//                 if (path.extname(p) !== ".md") {
-//                     doc.build(config);
-//                 }
-//             })
-//         })
-//     })
-// }
-
-// function commandBuild() {
-//     logger('Building gfs doc guide...');
-
-//     const build = require('../scripts/build');
-//     const compiler = build(config, err => {
-//         if (err) {
-//             console.error(err);
-//             process.exit(1);
-//         } else {
-//             logger('kfs-doc published to:\n' + chalk.underline(config.styleguideDir));
-//         }
-//     });
-// }
-
-
-
+function commandBuild() {
+    logger.info('Building gfs doc...');
+}
