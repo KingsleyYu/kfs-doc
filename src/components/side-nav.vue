@@ -26,15 +26,15 @@
                     <ul>
                         <li>
                             <span class="line"></span>
-                            <a href="subItem.url">设计原则1</a>
+                            <a href="#/component/button2">设计原则1</a>
                         </li>
                         <li>
                             <span class="line"></span>
-                            <a href="subItem.url">设计原则1</a>
+                            <a href="subItem.url">设计原则2</a>
                         </li>
                         <li>
                             <span class="line"></span>
-                            <a href="subItem.url">设计原则1</a>
+                            <a href="subItem.url">设计原则3</a>
                         </li>
                     </ul>
                 </div>
@@ -108,10 +108,11 @@
 </template>
 
 <script>
+import docConfig from 'docConfig'
 export default {
     data() {
         return {
-
+            port: docConfig.port
         }
     }
 }

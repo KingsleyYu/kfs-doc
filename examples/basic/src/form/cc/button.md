@@ -4,29 +4,6 @@
     @submodule 按钮3
 :::
 
-<script>
-  import elButton from './button.vue';
-  export default {
-    data() {
-      return {
-      }
-    },
-    methods: {
-      handleClick(event) {
-        console.log(event);
-        alert('button clicked!');
-      }
-    },
-    mounted() {
-        
-    },
-    components:{
-        elButton
-    }
-  }
-</script>
-
-
 
 ## Button 按钮
 常用的操作按钮。

@@ -5,18 +5,24 @@
       <div class="col-xs-6 col-sm-2 col-md-3 navbar">
         <side-nav></side-nav>
       </div>
-      <div class="col-xs-6 col-sm-5 page-container">
+      <div class="col-xs-6 col-sm-9 page-container">
+        <el-button></el-button>
+        <router-view></router-view>
+      </div>
+      <!-- <div class="col-xs-6 col-sm-5 page-container">
         <el-button></el-button>
       </div>
       <div class="col-sm-4 demo">
         <phone></phone>
-      </div>
+      </div> -->
+      <!-- <router-view></router-view> -->
     </main>
   </div>
 </template>
 
 <script>
 import elButton from '../examples/button.md'
+
 export default {
   name: 'app',
   data() {

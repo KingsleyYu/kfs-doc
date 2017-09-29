@@ -1,6 +1,6 @@
 {
   "name": "kfs-doc",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "kfs-doc",
   "author": "yuxiaochen <yuxiaochen02@meituan.com>",
   "scripts": {

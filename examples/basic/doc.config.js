@@ -1,13 +1,13 @@
 module.exports = {
     //扫描的文件路径
     paths: ['src/'],
-    port:'3005',
+    port: '3005',
     outdir: 'doc/',
     project: {
         name: '商家线UI库',
         description: 'phonix-ui',
         isApp: false,
-        type:'vue',
+        type: 'vue',
         version: '1.1.0',
         url: 'https://github.com/future-team',
         navs: [{
@@ -25,11 +25,11 @@ module.exports = {
             subMenus: [
                 {
                     name: "安装",
-                    url: "install.md" //markdown 文件的绝对路径，相对于path
+                    url: "form/Button.md" //markdown 文件的绝对路径，相对于path
                 },
                 {
                     name: "快速上手",
-                    url: "quickstart.md" 
+                    url: "quickstart.md"
                 },
             ]
         }],

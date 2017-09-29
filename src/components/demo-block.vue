@@ -140,8 +140,9 @@
   }
 </style>
 
-<script type="text/babel">
+<script>
   export default {
+    name:'demo-block',
     data() {
       return {
         hovering: false,
@@ -163,10 +164,6 @@
     computed: {
       lang() {
         return this.$route.path.split('/')[1];
-      },
-
-      langConfig() {
-        return compoLang.filter(config => config.lang === this.lang)[0]['demo-block'];
       },
 
       blockClass() {

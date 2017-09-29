@@ -26,21 +26,22 @@ exports.build = function (config, callback) {
         fs.mkdirSync(config.base.outdir)
     }
 
-    getFiles(config, (data) => {
+    readFiles(config, (data) => {
         //生成data.json 到 指定目录
         let metaData = config.base;
-        var modules = {};
+        let modules = {};
 
-        var i = 0;
+        let i = 0;
         while (i < data.length) {
-            var key = data[i].module.toString();
+            let key = data[i].module.toString();
             if (typeof (modules[key]) == "undefined") {
                 modules[key] = [];
             }
 
             modules[key].push({
                 name: data[i].subModule,
-                class: data[i].class
+                class: data[i].class,
+                path: data[i].path
             });
 
             i++;
@@ -74,32 +75,55 @@ exports.build = function (config, callback) {
  * 获取指定目录下markdown文件
  * @param {*} src 
  */
-function getFiles(config, callback) {
-    let tagList = [];
-    logger.info("reading files:")
-    dir.readFiles(config.base.paths[0],
-        {
-            match: /.md$/
-        },
-        function (err, content, next) {
-            if (err) throw err;
-            tagList.push(readContent(content))
-            next();
-        },
-        function (err, files) {
-            if (err) throw err;
-            files.forEach((file) => {
-                logger.info(file);
-            })
+function readFiles(config, callback) {
+    let tagList = [], custMenus = [];
+    let basePath = path.join(process.cwd(), config.base.paths[0]);
+    // let basePath = path.join(process.cwd(), 'examples', 'basic', config.base.paths[0]);
+    let sep = path.sep;
 
-            logger.info('finished reading files');
+    logger.info("reading files:");
 
-            callback && callback(tagList);
+    if (config.base.project.menus && config.base.project.menus.length) {
+        config.base.project.menus.forEach((oMenu) => {
+            if (oMenu.subMenus && oMenu.subMenus.length > 0) {
+                oMenu.subMenus.forEach(oSubMenu => {
+                    custMenus.push(path.join(basePath, ...oSubMenu.url.split(path.sep)))
+                })
+            }
+        })
+    }
+
+    dir.files(basePath, function (err, files) {
+        if (err) throw err;
+
+        files.sort();
+
+        // exclude some filenames 
+        files = files.filter(function (file) {
+            if (path.extname(file) === ".md" && custMenus.indexOf(file) === -1) {
+                return true;
+            }
+            else {
+                return false;
+            }
         });
+
+        files.forEach(oFile => {
+            let content = fs.readFileSync(oFile).toString();
+            tagList.push(readContent(content, oFile.replace(basePath, '')))
+        })
+
+        files.forEach((file) => {
+            logger.info(file.replace(basePath, ''));
+        })
+
+        logger.info('finished reading files');
+
+        callback && callback(tagList);
+    });
 }
 
-
-function readContent(content) {
+function readContent(content, filePath) {
     let tag = null;
     let result = content.match(/:::config([\s\S]+):::/);
 
@@ -110,6 +134,7 @@ function readContent(content) {
         tag.class = getClass(content);
         tag.module = getModule(content);
         tag.subModule = getSubModule(content);
+        tag.path = filePath;
     }
 
     return tag;

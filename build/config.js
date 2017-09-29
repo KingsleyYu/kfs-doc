@@ -103,6 +103,7 @@ function findConfigFile() {
     let configDir;
     try {
         configDir = findup.sync(process.cwd(), CONFIG_FILENAME);
+        // configDir = findup.sync(process.cwd()+'/examples/basic', CONFIG_FILENAME);
     } catch (exception) {
         return false;
     }
