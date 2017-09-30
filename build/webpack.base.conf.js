@@ -1,7 +1,7 @@
 var path = require('path')
 var fs = require('fs')
 var utils = require('./utils')
-var config = require('../config')
+var config = require('./config')()
 var vueLoaderConfig = require('./vue-loader.conf')
 var md = require('markdown-it')()
 var striptags = require('./strip-tags');
@@ -33,7 +33,8 @@ module.exports = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src')
+      '@': resolve('src'),
+      'docConfig': path.join(process.cwd(), config.base.outdir, 'doc')
     },
     symlinks: false
   },
