@@ -36,6 +36,6 @@
   },
   "dependencies": {
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "kfs-doc": "^1.0.15"
+    "kfs-doc": "^1.0.16"
   }
 }
