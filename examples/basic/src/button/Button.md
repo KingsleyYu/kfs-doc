@@ -1,11 +1,15 @@
 :::config
-    @class Dialog
     @module 基础组件
-    @submodule 弹框
+    @submodule 按钮2
+    @class button2
 :::
 
+
+
 <script>
-  import mtButton from './components/button';
+
+  import mtButton from './Button.vue'; 
+ 
   export default {
     data() {
       return {
@@ -27,9 +31,8 @@
 </script>
 
 
-
-## 首页 按钮
-操作按钮。
+## Button2 按钮
+常用的操作按钮。
 
 ### 引入
 
@@ -41,14 +44,13 @@ Vue.component(Button.name, Button);
 
 ### 主按钮（p0）
 
-这个下方的demo-block 能成功编译
+这个下方的demo-block 不能被识别。errormsg:[Vue warn]: Unknown custom element: <demo-block> - did you register the component correctly? For recursive components, make sure to provide the "name" option.
 
 :::demo
-```javascript
+```html
 <mt-button type="default">default</mt-button>
 <mt-button type="primary">primary</mt-button>
 <mt-button type="danger">danger</mt-button>
 ```
 :::
-
 

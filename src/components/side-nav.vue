@@ -26,7 +26,7 @@
                     <ul>
                         <li>
                             <span class="line"></span>
-                            <a href="#/component/button2">设计原则1</a>
+                            <a href="#/component/button2">button2</a>
                         </li>
                         <li>
                             <span class="line"></span>
@@ -186,6 +186,7 @@ export default {
                             text-decoration: none;
                             font-size: 16px;
                             color: #333333;
+                            display: block;
                         }
 
                         &.ative,

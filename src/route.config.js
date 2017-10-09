@@ -8,7 +8,6 @@ import path from 'path'
 const customNavs = docConfig.project.menus;
 const compoentNavs = docConfig.modules;
 
-import Button2 from '../../../src/form/aa/bb/Button.md';
 import Hello from './Hello';
 
 
@@ -45,32 +44,32 @@ const registerDocRoute = (componentNavConfigs) => {
     return routes;
 }
 
-// let route = registerDocRoute(compoentNavs);
+let route = registerDocRoute(compoentNavs);
 
-let route=[];
+// let route=[];
 
 let indexRoute = {
     path: '/',
     component: r => require.ensure([], () => r(require(`./Hello`)), 'components')
 }
 
-route.push({
-    path: '/',
-    component: Hello
-})
+// route.push({
+//     path: '/',
+//     component: Hello
+// })
 
-route.push({
-    path:'/component/button2',
-    component:Button2
-})
+// route.push({
+//     path:'/component/button2',
+//     component:Button2
+// })
 
 // route.concat([indexRoute])
 
-// route = route.concat([
-//     {
-//         path: '/',
-
-//     }
-// ])
+route = route.concat([
+    {
+        path: '/',
+        component: r => require.ensure([], () => r(require(`./Hello`)), 'components')
+    }
+])
 
 export default route;

@@ -1,16 +1,18 @@
 <template>
-  <div>
-    dsfsdfds
-      <demo-block></demo-block>
-  </div>
+  <el-button></el-button>
 </template>
 
 <script>
+import elButton from '../examples/button.md'
+
 export default {
-  data(){
-      return {
-          
-      }
+  data() {
+    return {
+
+    }
+  },
+  components:{
+    elButton
   }
 }
 </script>

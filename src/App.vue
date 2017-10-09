@@ -6,7 +6,6 @@
         <side-nav></side-nav>
       </div>
       <div class="col-xs-6 col-sm-9 page-container">
-        <el-button></el-button>
         <router-view></router-view>
       </div>
       <!-- <div class="col-xs-6 col-sm-5 page-container">
@@ -21,17 +20,12 @@
 </template>
 
 <script>
-import elButton from '../examples/button.md'
-
 export default {
   name: 'app',
   data() {
     return {
 
     }
-  },
-  components: {
-    elButton
   }
 }
 </script>
@@ -98,6 +92,7 @@ body {
       p {
         font-size: 12px;
         color: #999999;
+        margin-bottom: 15px;
       }
 
       pre {

@@ -18,7 +18,6 @@ Vue.use(VueRouter);
 
 Vue.config.productionTip = false
 
-console.log('12345');
 Vue.component('demo-block', demoBlock)
 Vue.component('main-header', MainHeader)
 Vue.component('main-footer', MainFooter)
